@@ -1,0 +1,128 @@
+import re
+
+print("Braille Rules:\n"  # Explain how the translator works.
+      "Go column by column, use period for dot, forward slash otherwise.\n"
+      "Separate each character with a comma, and a single space to separate words\n"
+      "A single dot at the end designates the next character to be capitalized.\n"
+      "Use two sequential dots to capitalize the full word.\n"
+      "Use 3,4,5,6 to designate the next character as a number. All following adjacent characters will be numbers\n"
+      "Example: .././/,./.../,//.//.")
+
+braille_input = input(">").split(",")  # Input for the translator
+english = []  # List for storing the alphanumeric sentence elements
+final_sentence = []  # List for the output string
+cap_finder = r'([*]+)([\w]+)+'
+num_finder = r'(#)([a-z]+)'
+norm_finder = r'^([a-z]+)'
+
+
+def braille_to_english(i):
+    if i == " ":
+        english.append(i)
+    if i == "/////.":
+        english.append("*")  # Mark the next letter to be capitalized
+    elif i == "//....":
+        english.append("#")
+    elif i == "./////":
+        english.append("a")
+    elif i == "..////":
+        english.append("b")
+    elif i == ".//.//":
+        english.append("c")
+    elif i == ".//../":
+        english.append("d")
+    elif i == ".///./":
+        english.append("e")
+    elif i == ".././/":
+        english.append("f")
+    elif i == "../../":
+        english.append("g")
+    elif i == "..//./":
+        english.append("h")
+    elif i == "/././/":
+        english.append("i")
+    elif i == "/./../":
+        english.append("j")
+    elif i == "././//":
+        english.append("k")
+    elif i == "...///":
+        english.append("l")
+    elif i == "./..//":
+        english.append("m")
+    elif i == "./.../":
+        english.append("n")
+    elif i == "./././":
+        english.append("o")
+    elif i == "....//":
+        english.append("p")
+    elif i == "...../":
+        english.append("q")
+    elif i == "..././":
+        english.append("r")
+    elif i == "/...//":
+        english.append("s")
+    elif i == "/..../":
+        english.append("t")
+    elif i == "././/.":
+        english.append("u")
+    elif i == "...//.":
+        english.append("v")
+    elif i == "/./...":
+        english.append("w")
+    elif i == "./../.":
+        english.append("x")
+    elif i == "./....":
+        english.append("y")
+    elif i == "././..":
+        english.append("z")
+
+
+for x in braille_input:
+    bar = x.split(",")
+    braille_to_english("".join(bar))
+
+english = "".join(english)
+english = english.split(" ")
+
+for z in range(0, len(english)):
+    cap = re.search(cap_finder, english[z])
+    num = re.search(num_finder, english[z])
+    norm = re.search(norm_finder, english[z])
+    if english[z] == " ":
+        final_sentence.append(" ")
+    elif norm is not None:
+        final_sentence.append(norm[1])
+    elif cap is not None and cap[1] == "*":
+        first = cap[2].split()
+        final_sentence.append("".join(first[0].capitalize()) + "".join(first[1:]))
+    elif cap is not None and cap[1] == "**":
+        final_sentence.append(cap[2].upper())
+    elif num is not None and num[1] == "#":
+        split_letters = num[2]
+        split_letters.split()
+        new_num = []
+        for x in split_letters:
+            if x == "a":
+                x = "1"
+            elif x == "b":
+                x = "2"
+            elif x == "c":
+                x = "3"
+            elif x == "d":
+                x = "4"
+            elif x == "e":
+                x = "5"
+            elif x == "f":
+                x = "6"
+            elif x == "g":
+                x = "7"
+            elif x == "h":
+                x = "8"
+            elif x == "i":
+                x = "9"
+            elif x == "j":
+                x = "0"
+            new_num.append(x)
+        final_sentence.append("".join(new_num))
+
+print(" ".join(final_sentence) + ".")
